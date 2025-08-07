@@ -6,26 +6,31 @@ class MovieController extends ChangeNotifier {
   Movie? item;
   List<Search> movies = [];
   List<Search> movieDetail = [];
-  List<Search> selectedMovie = [];
-  String selectedItemId = "";
-  bool loading = false;
+  List<Search> latestMovies = [];
+  List<Search> pagedMovies = [];
   bool loader = false;
-  int page = 1;
-  late int totalPages;
 
-  getSelectedItem(String id) {
-    selectedItemId = id;
-    notifyListeners();
-  }
 
   getMoviePosters(BuildContext context) async {
-    loading = true;
-    String apiUrl = '&s=batman&type=movie';
+    loader = true;
+    String apiUrl = '&s=batman&type=movie'; // filter by title
     final response = await ApiService().request(method:'GET',url: apiUrl);
     item = movieFromJson(response);
     movies.clear();
     movies.addAll(item!.search);
-    loading = false;
+    loader = false;
     notifyListeners();
   }
+
+  getLatestMovies(BuildContext context) async {
+    loader = true;
+    String apiUrl = '&s=movie&type=movie&y=2022'; // filter by year
+    final response = await ApiService().request(method: 'GET', url: apiUrl);
+    Movie result = movieFromJson(response);
+    latestMovies.clear();
+    latestMovies.addAll(result.search);
+    loader = false;
+    notifyListeners();
+  }
+
 }

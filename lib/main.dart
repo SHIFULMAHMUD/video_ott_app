@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
                   ],
                   background: Container(color: const Color(0xFFF5F5F5))),
               debugShowCheckedModeBanner: false,
-              title: 'Video OTT App',
+              title: 'OTT App',
               theme: ThemeData(
                   primarySwatch: Colors.blue,
                   fontFamily: 'Roboto',
