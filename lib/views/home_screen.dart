@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:video_ott_app/controllers/movie_controller.dart';
+import 'package:video_ott_app/views/listing_screen.dart';
 import 'package:video_ott_app/views/widgets/movie_carousel.dart';
 import 'package:video_ott_app/views/widgets/movie_rail.dart';
 
@@ -44,7 +45,25 @@ class _HomeScreenState extends State<HomeScreen> {
             movies: movieController.latestMovies,
             onTap: (movie) {},
           ),
-          // Add more widgets here if needed
+          const SizedBox(height: 16),
+          // Title for Portrait section
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Text(
+              "Collection of Avengers",
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 8),
+
+          // ListingScreen embedded with fixed height
+          SizedBox(
+            height: 500, // You can adjust this height as needed
+            child: ListingScreen(keyword: 'avengers'), // This must be a scrollable widget
+          ),
         ],
       ),
     );

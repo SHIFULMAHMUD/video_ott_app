@@ -8,7 +8,10 @@ class MovieController extends ChangeNotifier {
   List<Search> movieDetail = [];
   List<Search> latestMovies = [];
   List<Search> pagedMovies = [];
+  int currentPage = 1;
   bool loader = false;
+  bool isFetching = false;
+  bool hasMore = true;
 
 
   getMoviePosters(BuildContext context) async {
@@ -32,5 +35,30 @@ class MovieController extends ChangeNotifier {
     loader = false;
     notifyListeners();
   }
+
+  Future<void> fetchPagedMovies(String keyword) async {
+    if (isFetching || !hasMore) return;
+
+    isFetching = true;
+    notifyListeners();
+
+    final response = await ApiService().request(
+      method: 'GET',
+      url: '&s=$keyword&type=movie&page=$currentPage',
+    );
+
+    final movieData = movieFromJson(response);
+
+    if (movieData.search.isEmpty) {
+      hasMore = false;
+    } else {
+      pagedMovies.addAll(movieData.search);
+      currentPage++;
+    }
+
+    isFetching = false;
+    notifyListeners();
+  }
+
 
 }
