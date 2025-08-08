@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:video_ott_app/controllers/movie_controller.dart';
 import 'package:video_ott_app/models/movie.dart';
+import 'package:video_ott_app/views/detail_screen.dart';
 
 class ListingScreen extends StatefulWidget {
   final String keyword; // example: "avengers"
@@ -22,7 +23,7 @@ class _ListingScreenState extends State<ListingScreen> {
     provider.pagedMovies.clear();
     provider.currentPage = 1;
     provider.hasMore = true;
-    provider.fetchPagedMovies(widget.keyword);
+    provider.getMoviesWithPagination(widget.keyword);
 
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
@@ -33,7 +34,7 @@ class _ListingScreenState extends State<ListingScreen> {
         _scrollController.position.maxScrollExtent - 200 &&
         !Provider.of<MovieController>(context, listen: false).isFetching) {
       Provider.of<MovieController>(context, listen: false)
-          .fetchPagedMovies(widget.keyword);
+          .getMoviesWithPagination(widget.keyword);
     }
   }
 
@@ -65,27 +66,38 @@ class _ListingScreenState extends State<ListingScreen> {
         itemBuilder: (context, index) {
           if (index < movieController.pagedMovies.length) {
             Search movie = movieController.pagedMovies[index];
-            return Column(
-              children: [
-                Expanded(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      movie.poster != 'N/A'
-                          ? movie.poster
-                          : 'https://placehold.co/400x600?text=No%20Image!',
-                      fit: BoxFit.cover,
+            return GestureDetector(
+              onTap: () {
+                final imdbId = movie.imdbId;
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DetailScreen(imdbId: imdbId),
+                  ),
+                );
+              },
+              child: Column(
+                children: [
+                  Expanded(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        movie.poster != 'N/A'
+                            ? movie.poster
+                            : 'https://placehold.co/400x600?text=No%20Image!',
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  movie.title,
-                  style: TextStyle(fontSize: 12),
-                  maxLines: 2,
-                  textAlign: TextAlign.center,
-                ),
-              ],
+                  SizedBox(height: 4),
+                  Text(
+                    movie.title,
+                    style: TextStyle(fontSize: 12),
+                    maxLines: 2,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             );
           } else {
             return Center(child: CircularProgressIndicator());

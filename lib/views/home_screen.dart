@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:video_ott_app/controllers/movie_controller.dart';
+import 'package:video_ott_app/views/detail_screen.dart';
 import 'package:video_ott_app/views/listing_screen.dart';
 import 'package:video_ott_app/views/widgets/movie_carousel.dart';
 import 'package:video_ott_app/views/widgets/movie_rail.dart';
@@ -38,12 +39,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 : movieController.movies,
             onTap: (movie) {
               // handle movie tap here
+              final imdbId = movie.imdbId;
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DetailScreen(imdbId: imdbId),
+                ),
+              );
             },
           ),
           MovieRail(
             title: "Latest Movies (2022)",
             movies: movieController.latestMovies,
-            onTap: (movie) {},
+            onTap: (movie) {
+              final imdbId = movie.imdbId;
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DetailScreen(imdbId: imdbId),
+                ),
+              );
+            },
           ),
           const SizedBox(height: 16),
           // Title for Portrait section

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:video_ott_app/models/movie.dart';
 import 'package:video_ott_app/services/api_service.dart';
+import 'package:video_ott_app/models/movie_detail.dart';
 
 class MovieController extends ChangeNotifier {
   Movie? item;
@@ -12,15 +13,19 @@ class MovieController extends ChangeNotifier {
   bool loader = false;
   bool isFetching = false;
   bool hasMore = true;
+  MovieDetail? selectedMovieDetail;
 
 
   getMoviePosters(BuildContext context) async {
     loader = true;
     String apiUrl = '&s=batman&type=movie'; // filter by title
+
     final response = await ApiService().request(method:'GET',url: apiUrl);
     item = movieFromJson(response);
+
     movies.clear();
     movies.addAll(item!.search);
+
     loader = false;
     notifyListeners();
   }
@@ -28,15 +33,18 @@ class MovieController extends ChangeNotifier {
   getLatestMovies(BuildContext context) async {
     loader = true;
     String apiUrl = '&s=movie&type=movie&y=2022'; // filter by year
+
     final response = await ApiService().request(method: 'GET', url: apiUrl);
     Movie result = movieFromJson(response);
+
     latestMovies.clear();
     latestMovies.addAll(result.search);
+
     loader = false;
     notifyListeners();
   }
 
-  Future<void> fetchPagedMovies(String keyword) async {
+  Future<void> getMoviesWithPagination(String keyword) async {
     if (isFetching || !hasMore) return;
 
     isFetching = true;
@@ -60,5 +68,12 @@ class MovieController extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> getMovieDetail(String imdbId) async {
+    final url = '&i=$imdbId&plot=full';
+    final response = await ApiService().request(method: 'GET', url: url);
+
+    selectedMovieDetail = movieDetailFromJson(response);
+    notifyListeners();
+  }
 
 }
