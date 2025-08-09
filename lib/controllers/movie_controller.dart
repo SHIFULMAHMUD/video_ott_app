@@ -20,7 +20,7 @@ class MovieController extends ChangeNotifier {
     loader = true;
     String apiUrl = '&s=batman&type=movie'; // filter by title
 
-    final response = await ApiService().request(method:'GET',url: apiUrl);
+    final response = await ApiService().request(method:'GET',url: apiUrl, context: context);
     item = movieFromJson(response);
 
     movies.clear();
@@ -34,7 +34,7 @@ class MovieController extends ChangeNotifier {
     loader = true;
     String apiUrl = '&s=movie&type=movie&y=2022'; // filter by year
 
-    final response = await ApiService().request(method: 'GET', url: apiUrl);
+    final response = await ApiService().request(method: 'GET', url: apiUrl, context: context);
     Movie result = movieFromJson(response);
 
     latestMovies.clear();
