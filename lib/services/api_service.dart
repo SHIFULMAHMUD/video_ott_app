@@ -4,7 +4,6 @@ import 'package:video_ott_app/services/api_route.dart';
 import 'package:video_ott_app/views/home_screen.dart';
 
 class ApiService {
-  bool realRequest = true;
 
   get website => ApiRoute.BASE_URL;
 
@@ -12,6 +11,12 @@ class ApiService {
 
   ApiService({this.context});
 
+  // Generic request method that supports GET, POST, etc.
+  // url: endpoint path (query parameters appended automatically if provided)
+  // method: HTTP method as String, e.g. "GET", "POST"
+  // context: optional BuildContext for showing error dialogs
+  // params: optional query parameters for GET requests
+  // body: optional request body for POST/PUT requests
   request(
       {required String url,
         required method ,
@@ -26,9 +31,9 @@ class ApiService {
             "Accept": "application/json",
             "Content-Type": "application/json",
           },
-        );
+        ); // Setup Dio options including base URL and headers
 
-        method ??= "GET";
+        method ??= "GET"; // Default to GET if no method specified
 
         Dio dio = Dio(options);
 
@@ -37,20 +42,22 @@ class ApiService {
           queryParameters: params,
           data: body,
           options: Options(method: method),
-        );
+        ); // Make HTTP request using Dio
 
         return response.toString();
 
       } on DioError catch (e) {
+        // Handle errors when response is available (e.g. 4xx, 5xx HTTP errors)
         if (e.response != null) {
-          print("=====show from ApiService 2 =====");
+          print("===== ApiService: HTTP Error Response =====");
           print('STATUS: ${e.response?.statusCode}');
           print('DATA: ${e.response?.data}');
           print('HEADERS: ${e.response?.headers}');
 
           return e.response?.data.toString();
         } else {
-          print("=====show from ApiService 1 =====");
+          // Handle errors without response (e.g. no internet, timeout)
+          print("===== ApiService: Network Error =====");
           print(e.message);
           if (context != null) {
             _showNoInternetDialog(context);
@@ -61,6 +68,7 @@ class ApiService {
       }
   }
 
+  // method to display a no internet connection dialog and navigate to HomeScreen
   void _showNoInternetDialog(context) {
       showDialog(
         context: context!,

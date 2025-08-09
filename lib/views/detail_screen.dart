@@ -14,18 +14,21 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   void initState() {
     super.initState();
+    // Fetch detailed movie info when screen initializes
+    // listen: false because we don't want rebuild here, only trigger data fetch
     Provider.of<MovieController>(context, listen: false).getMovieDetail(widget.imdbId);
   }
 
   @override
   Widget build(BuildContext context) {
+    // Listen for updates to the selected movie detail from MovieController
     final controller = Provider.of<MovieController>(context);
     final movie = controller.selectedMovieDetail;
 
     return Scaffold(
-      appBar: AppBar(title: Text(movie?.title ?? "Loading...")),
+      appBar: AppBar(title: Text(movie?.title ?? "Loading...")),  // Show movie title if loaded, otherwise show "Loading..."
       body: movie == null
-          ? Center(child: CircularProgressIndicator())
+          ? Center(child: CircularProgressIndicator())  // Show loading spinner while data is being fetched
           : SingleChildScrollView(
         padding: EdgeInsets.all(16),
         child: Column(

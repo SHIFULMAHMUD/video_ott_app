@@ -26,11 +26,14 @@ class _HomeScreenState extends State<HomeScreen> {
     // Call API once when screen loads
     Provider.of<MovieController>(context, listen: false).getMoviePosters(context);
     Provider.of<MovieController>(context, listen: false).getLatestMovies(context);
+
+    // Load local videos asynchronously from assets
     _videosFuture = VideoService.loadVideos();
   }
 
   @override
   Widget build(BuildContext context) {
+    // Obtain the MovieController instance to listen for changes and update the UI accordingly
     final movieController = Provider.of<MovieController>(context);
 
     return Scaffold(
@@ -39,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ? Center(child: CircularProgressIndicator())
           : ListView(
         children: [
+          // Carousel of featured movies (max 5)
           MovieCarousel(
             movies: movieController.movies.length >= 5
                 ? movieController.movies.take(5).toList()
@@ -82,6 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
           const SizedBox(height: 8),
 
+          // FutureBuilder to load and display videos asynchronously
           FutureBuilder<List<Video>>(
             future: _videosFuture,
             builder: (context, snapshot) {
@@ -99,6 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
               final videos = snapshot.data!;
 
+              // Horizontal scrollable row of videos
               return SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
@@ -153,7 +159,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
 
           const SizedBox(height: 16),
-          // Title for collection section
+
+          // Section title for Avengers collection
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Text(
@@ -168,7 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
           // ListingScreen embedded with fixed height
           SizedBox(
-            height: 500, // You can adjust this height as needed
+            height: 500, // adjust this height as needed
             child: ListingScreen(keyword: 'avengers'), // This must be a scrollable widget
           ),
         ],

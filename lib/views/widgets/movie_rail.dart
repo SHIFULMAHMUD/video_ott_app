@@ -16,7 +16,7 @@ class MovieRail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,  // Align children to start horizontally
       children: [
         Padding(
           padding: const EdgeInsets.all(12),
@@ -40,20 +40,20 @@ class MovieRail extends StatelessWidget {
                   child: Column(
                     children: [
                       AspectRatio(
-                        aspectRatio: 2 / 3,
+                        aspectRatio: 2 / 3,  // Maintain poster aspect ratio (width:height)
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(8),
                           child: Image.network(
-                            movie.poster != 'N/A' ? movie.poster : 'https://placehold.co/400x600?text=No%20Image!',
+                            movie.poster != 'N/A' ? movie.poster : 'https://placehold.co/400x600?text=No%20Image!',  // Placeholder image if no poster
                             fit: BoxFit.cover,
                           ),
                         ),
                       ),
-                      SizedBox(height: 6),
+                      SizedBox(height: 6),  // Spacing between image and title
                       Text(
                         movie.title,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,  // Limit title to 2 lines
+                        overflow: TextOverflow.ellipsis,  // Ellipsis for overflow
                         style: TextStyle(fontSize: 12),
                         textAlign: TextAlign.center,
                       )

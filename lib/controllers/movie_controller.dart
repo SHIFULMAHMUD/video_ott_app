@@ -23,8 +23,8 @@ class MovieController extends ChangeNotifier {
     final response = await ApiService().request(method:'GET',url: apiUrl, context: context);
     item = movieFromJson(response);
 
-    movies.clear();
-    movies.addAll(item!.search);
+    movies.clear(); // Clear existing movie list
+    movies.addAll(item!.search);  // Add new movie search results
 
     loader = false;
     notifyListeners();
@@ -45,34 +45,34 @@ class MovieController extends ChangeNotifier {
   }
 
   Future<void> getMoviesWithPagination(String keyword) async {
-    if (isFetching || !hasMore) return;
+    if (isFetching || !hasMore) return; // Prevent multiple simultaneous fetches or fetching if no more data
 
-    isFetching = true;
-    notifyListeners();
+    isFetching = true; // Indicate that fetching has started
+    notifyListeners(); // Notify UI to show loading state
 
     final response = await ApiService().request(
       method: 'GET',
       url: '&s=$keyword&type=movie&page=$currentPage',
-    );
+    ); // Make the API request with the search keyword, type, and current page number
 
-    final movieData = movieFromJson(response);
+    final movieData = movieFromJson(response); // Parse the JSON response into movie data model
 
     if (movieData.search.isEmpty) {
-      hasMore = false;
+      hasMore = false; // No more results, mark hasMore as false to stop further requests
     } else {
-      pagedMovies.addAll(movieData.search);
-      currentPage++;
+      pagedMovies.addAll(movieData.search); // Append newly fetched movies to the existing list
+      currentPage++; // Increment page number for next fetch
     }
 
-    isFetching = false;
-    notifyListeners();
+    isFetching = false; // Fetching is complete
+    notifyListeners(); // Notify UI to update with new data or state
   }
 
   Future<void> getMovieDetail(String imdbId) async {
-    final url = '&i=$imdbId&plot=full';
+    final url = '&i=$imdbId&plot=full'; // Construct URL with IMDb ID and request full plot details
     final response = await ApiService().request(method: 'GET', url: url);
 
-    selectedMovieDetail = movieDetailFromJson(response);
+    selectedMovieDetail = movieDetailFromJson(response); // Parse response and update selected movie detail
     notifyListeners();
   }
 
